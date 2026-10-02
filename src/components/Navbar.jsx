@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useAuth } from '../contexts/useAuth';
-import { LogOut, CheckCircle2, Loader2 } from 'lucide-react';
-
+import { LogOut, CheckCircle2, Loader2, KeyRound } from 'lucide-react';
 
 export default function Navbar() {
-  const { currentUser, logout } = useAuth();
+  const { currentUser, logout, resetPassword } = useAuth();
   const [loggingOut, setLoggingOut] = useState(false);
+  const [resettingPassword, setResettingPassword] = useState(false);
 
   async function handleLogout() {
     try {
@@ -15,6 +15,25 @@ export default function Navbar() {
       console.error('Erro ao deslogar:', error);
     } finally {
       setLoggingOut(false);
+    }
+  }
+
+  async function handleResetPassword() {
+    if (!currentUser?.email) return;
+    const confirm = window.confirm(
+      `Deseja receber um link para redefinir sua senha no e-mail: ${currentUser.email}?`
+    );
+    if (!confirm) return;
+
+    try {
+      setResettingPassword(true);
+      await resetPassword(currentUser.email);
+      alert(`E-mail de redefinição de senha enviado com sucesso para ${currentUser.email}! Verifique sua caixa de entrada.`);
+    } catch (error) {
+      console.error('Erro ao enviar redefinição de senha:', error);
+      alert('Erro ao enviar e-mail de redefinição. Tente novamente mais tarde.');
+    } finally {
+      setResettingPassword(false);
     }
   }
 
@@ -47,10 +66,24 @@ export default function Navbar() {
             </div>
 
             <button
+              onClick={handleResetPassword}
+              disabled={resettingPassword}
+              title="Redefinir senha da conta"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 border border-slate-200 hover:border-indigo-200 transition-colors cursor-pointer"
+            >
+              {resettingPassword ? (
+                <Loader2 className="w-4 h-4 animate-spin text-indigo-600" />
+              ) : (
+                <KeyRound className="w-4 h-4" />
+              )}
+              <span className="hidden md:inline">Redefinir Senha</span>
+            </button>
+
+            <button
               onClick={handleLogout}
               disabled={loggingOut}
               title="Sair da conta"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-red-600 hover:bg-red-50 border border-slate-200 hover:border-red-200 transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-red-600 hover:bg-red-50 border border-slate-200 hover:border-red-200 transition-colors cursor-pointer"
             >
               {loggingOut ? (
                 <Loader2 className="w-4 h-4 animate-spin" />

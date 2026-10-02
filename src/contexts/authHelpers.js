@@ -5,6 +5,8 @@ export function formatAuthError(error) {
       return 'Este e-mail já está em uso por outra conta.';
     case 'auth/invalid-email':
       return 'O formato do e-mail informado é inválido.';
+    case 'auth/missing-email':
+      return 'Por favor, informe o seu e-mail.';
     case 'auth/weak-password':
       return 'A senha é muito fraca. Utilize no mínimo 6 caracteres.';
     case 'auth/user-not-found':

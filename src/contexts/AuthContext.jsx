@@ -5,6 +5,7 @@ import {
   signOut,
   onAuthStateChanged,
   updateProfile,
+  sendPasswordResetEmail,
 } from 'firebase/auth';
 import { auth, isFirebaseConfigured } from '../services/firebase';
 import { AuthContext } from './useAuth';
@@ -47,6 +48,11 @@ export function AuthProvider({ children }) {
     await signOut(auth);
   }
 
+  async function resetPassword(email) {
+    if (!auth) throw new Error('Firebase não configurado');
+    await sendPasswordResetEmail(auth, email);
+  }
+
   const value = {
     currentUser,
     isFirebaseConfigured,
@@ -54,6 +60,7 @@ export function AuthProvider({ children }) {
     register,
     login,
     logout,
+    resetPassword,
   };
 
   return (

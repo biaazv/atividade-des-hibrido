@@ -3,7 +3,7 @@ import { useAuth } from '../contexts/useAuth';
 import { formatAuthError } from '../contexts/authHelpers';
 import { LogIn, Mail, Lock, Loader2, CheckCircle2 } from 'lucide-react';
 
-export default function Login({ onSwitchToRegister }) {
+export default function Login({ onSwitchToRegister, onSwitchToForgotPassword }) {
   const { login, isFirebaseConfigured } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -73,9 +73,20 @@ export default function Login({ onSwitchToRegister }) {
 
           {/* Senha */}
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-              Senha
-            </label>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="block text-xs font-semibold text-slate-700">
+                Senha
+              </label>
+              {onSwitchToForgotPassword && (
+                <button
+                  type="button"
+                  onClick={() => onSwitchToForgotPassword(email)}
+                  className="text-xs font-medium text-indigo-600 hover:text-indigo-700 hover:underline cursor-pointer"
+                >
+                  Esqueceu a senha?
+                </button>
+              )}
+            </div>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                 <Lock className="w-4 h-4" />

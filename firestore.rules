@@ -14,6 +14,7 @@ service cloud.firestore {
       // Atualização e exclusão permitidas apenas para o próprio dono do registro
       allow update, delete: if request.auth != null && resource.data.userId == request.auth.uid;
     }
+    
 
     // Bloqueia qualquer outro acesso não especificado
     match /{document=**} {
